@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Couples' Travel Budget Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #eef;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .container h2 {
+            text-align: center;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .form-group select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .form-group button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .form-group button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #333;
+        }
+        .error {
+            color: red;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Couples' Travel Budget Calculator</h2>
+    <div class="form-group">
+        <label for="days">Number of Days:</label>
+        <input type="number" id="days" min="1" required>
+    </div>
+    <div class="form-group">
+        <label for="daily-expenses">Daily Expenses per Person (USD):</label>
+        <input type="number" id="daily-expenses" min="0" required>
+    </div>
+    <div class="form-group">
+        <label for="accommodation-cost">Accommodation Cost per Night (USD):</label>
+        <input type="number" id="accommodation-cost" min="0" required>
+    </div>
+    <div class="form-group">
+        <label for="meal-cost">Average Daily Meal Cost per Person (USD):</label>
+        <input type="number" id="meal-cost" min="0" required>
+    </div>
+    <div class="form-group">
+        <label for="transport-cost">Average Daily Transportation Cost per Person (USD):</label>
+        <input type="number" id="transport-cost" min="0" required>
+    </div>
+    <div class="form-group">
+        <label for="activity-cost">Average Daily Activity Cost per Person (USD):</label>
+        <input type="number" id="activity-cost" min="0" required>
+    </div>
+    <div class="form-group">
+        <label for="additional-expenses">Additional Expenses (USD):</label>
+        <input type="number" id="additional-expenses" min="0" required>
+    </div>
+    <div class="form-group">
+        <label for="flight-cost">Flight Cost per Person (USD):</label>
+        <input type="number" id="flight-cost" min="0" required>
+    </div>
+    <div class="form-group">
+        <label for="currency">Convert Total Budget to:</label>
+        <select id="currency">
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+            <option value="GBP">GBP</option>
+            <option value="INR">INR</option>
+            <option value="AUD">AUD</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <button onclick="calculateBudget()">Calculate Budget</button>
+    </div>
+    <div class="result" id="result"></div>
+    <div class="error" id="error"></div>
+</div>
+
+<script>
+    const currencyRates = {
+        USD: 1,
+        EUR: 0.85,
+        GBP: 0.75,
+        INR: 74,
+        AUD: 1.35
+    };
+
+    function validateForm() {
+        const fields = ['days', 'daily-expenses', 'accommodation-cost', 'meal-cost', 'transport-cost', 'activity-cost', 'additional-expenses', 'flight-cost'];
+        let isValid = true;
+        fields.forEach(field => {
+            if (!document.getElementById(field).value) {
+                isValid = false;
+            }
+        });
+        return isValid;
+    }
+
+    function calculateBudget() {
+        if (!validateForm()) {
+            document.getElementById('error').innerText = 'Please fill in all fields.';
+            document.getElementById('result').innerText = '';
+            return;
+        }
+        
+        let days = parseInt(document.getElementById('days').value);
+        let dailyExpenses = parseFloat(document.getElementById('daily-expenses').value);
+        let accommodationCost = parseFloat(document.getElementById('accommodation-cost').value);
+        let mealCost = parseFloat(document.getElementById('meal-cost').value);
+        let transportCost = parseFloat(document.getElementById('transport-cost').value);
+        let activityCost = parseFloat(document.getElementById('activity-cost').value);
+        let additionalExpenses = parseFloat(document.getElementById('additional-expenses').value);
+        let flightCost = parseFloat(document.getElementById('flight-cost').value);
+        let currency = document.getElementById('currency').value;
+
+        let totalDailyExpenses = days * dailyExpenses * 2;
+        let totalAccommodationCost = days * accommodationCost;
+        let totalMealCost = days * mealCost * 2;
+        let totalTransportCost = days * transportCost * 2;
+        let totalActivityCost = days * activityCost * 2;
+        let totalAdditionalExpenses = additionalExpenses;
+        let totalFlightCost = flightCost * 2;
+
+        let totalBudgetUSD = totalDailyExpenses + totalAccommodationCost + totalMealCost + totalTransportCost + totalActivityCost + totalAdditionalExpenses + totalFlightCost;
+        let totalBudgetConverted = totalBudgetUSD * currencyRates[currency];
+
+        document.getElementById('result').innerText = `Estimated Total Budget: $${totalBudgetUSD.toFixed(2)} USD (${totalBudgetConverted.toFixed(2)} ${currency})`;
+        document.getElementById('error').innerText = '';
+    }
+</script>
+
+</body>
+</html>
